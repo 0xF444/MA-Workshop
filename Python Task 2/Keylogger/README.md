@@ -4,4 +4,4 @@
 
 I wasn't able to complete the project and do the error handling stuff due to exams.
 
-It does its basic functionality and I was looking to improve it and make a fully functional product, but I didn't have the time nor effort for it, sorry. :D 
+It does its basic functionality and I was looking to improve it and make a fully functional product, I'm will attempt to improve it overtime. 
