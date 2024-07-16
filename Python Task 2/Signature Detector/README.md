@@ -1,3 +1,4 @@
+#resources/workshops/MAWorkshop/tasks 
 # Signature Detector
 - This program is a command line utility built in Python that attempts to recursively unzip and compare file hashes to a hash database.
 - **NOTE**: This script works in Python 3.11 and above.
