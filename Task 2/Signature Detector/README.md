@@ -4,9 +4,9 @@
 - **NOTE**: This script works in Python 3.11 and above.
 ## Usage
 ```batch
-sig_detector.py -d <Database_File> -f <Your_File> [[--remove-path]]
+sig_detector.py -d <Database_File> -f <Your_File> | [--remove-path]
 ```
-Example: ```sig_detector.py -d Mal-Hashes.txt -f Task2.zip --remove-path
+Example: `sig_detector.py -d Mal-Hashes.txt -f Task2.zip --remove-path`
 
 | Option         | Function     
 |--------------|-----------|

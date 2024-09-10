@@ -117,7 +117,7 @@ The program then iterates over each device found by `pcap_findalldevs()` and pri
 
 Then, the program attempts to open a handle to a packet capture descriptor (essentially opening a live capture session) using `pcap_open_live()`, if this fails, the programs prints the name of the faulty interface and exits prematurely.
 
-The program then captures the packets from the device pointed by the descriptor `adhandle` and uses [#packet_handler()](#packet_handler()) as a callback function (It is triggered for each packet captured)
+The program then captures the packets from the device pointed by the descriptor `adhandle` and uses [packet_handler()](#packet_handler()) as a callback function (It is triggered for each packet captured)
 
 Lastly, frees all interfaces from the `alldevs` interface list and exits, returning 0.
 
@@ -134,7 +134,7 @@ CFF has a few terminologies to help deobfuscate:
 1. Dispatcher Block: This is the block that determines which block of the original code to be executed. ^ab71f2
 2. State Variable: This is the variable that separates each block of the original code.
 
-All what CFF does is that the original code is split up to different blocks, and modifies the state variable `state` for which the [|Dispatcher Block](#^ab71f2) decides which case to be executed.
+All what CFF does is that the original code is split up to different blocks, and modifies the state variable `state` for which the [Dispatcher Block](#^ab71f2) decides which case to be executed.
 
 In our example here, the program here runs normally even with CFF, because each case changes the `state` variable to the next case statement, which means that we can remove the Dispatcher Block and the state variable and execute normally.
 
