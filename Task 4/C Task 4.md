@@ -27,7 +27,9 @@ printf("Result = %d\n",GCD(a,b));
 }
 ```
 ## Output
-Using `a = 66528, b = 52920` as a test case:![Pasted image 20240807192004](Assets/Pasted%20image%2020240807192004.png)
+Using `a = 66528, b = 52920` as a test case:
+
+![Pasted image 20240807192004](Assets/Pasted%20image%2020240807192004.png)
 # Reversing Task
 The program given was as following:
 ```c
