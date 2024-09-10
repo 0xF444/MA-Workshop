@@ -27,7 +27,7 @@ printf("Result = %d\n",GCD(a,b));
 }
 ```
 ## Output
-Using `a = 66528, b = 52920` as a test case:![[Pasted image 20240807192004.png]]
+Using `a = 66528, b = 52920` as a test case:![Pasted image 20240807192004](Assets/Pasted%20image%2020240807192004.png)
 # Reversing Task
 The program given was as following:
 ```c
@@ -51,7 +51,9 @@ int main()
 }
 ```
 The program iterates over each character individually in a given `message` string variable and uses the C library function `isupper()` to check if its an uppercase character, if so then it converts it to a lowercase character using the `tolower()` function.
-![[Pasted image 20240807193645.png]]
+
+![Pasted image 20240807193645](Assets/Pasted%20image%2020240807193645.png)
+
 ## Solution
 Since the program is based on conditions for its operation, we can simply reverse its operations by either using the functions that does the exact opposite, or we can negate the first condition.
 ```c
@@ -90,6 +92,8 @@ int main()
 }
 ```
 
-Both yield the same output: ![[Pasted image 20240807194548.png]]
+Both yield the same output: 
+
+![Pasted image 20240807194548](Assets/Pasted%20image%2020240807194548.png)
 
 ---
