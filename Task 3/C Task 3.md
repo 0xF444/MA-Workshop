@@ -18,6 +18,7 @@
 # Analysis Tasks
 ## Function Pointer Obfuscation.c
 ![Pasted image 20240715073502](../Assets/Pasted%20image%2020240715073502.png)
+
 We first include our `stdio.h` library which has the `stdout/stdin` functions like `printf`.
 
 Then we define 3 functions which prints three different lines. ^1c2824
@@ -34,7 +35,9 @@ Otherwise, the function selected is then called and the program returns 0, indic
 ## Keylogger.c
 
 The program first begins by defining a *hook* global variable, then a **callback function** is declared with three arguments: `nCode`, `wParam` and `lParam`.
+
 ![Pasted image 20240715173855](../Assets/Pasted%20image%2020240715173855.png) ^e18af8
+
 >[!note] Callback functions are functions that are used as parameters later on, it has a similar design to function pointers.
 ### KeyboardProc()
 The function checks if the `nCode` parameter is equal to `HC_ACTION` which is a <mark style="background: #ABF7F7A6;">macro</mark> that indicates that the `wParam` and `lParam` arguments contain extra information about a keystroke message. ^e71c93
@@ -100,6 +103,7 @@ This function will serve as a **callback** function as this will be executed for
 ### main()
 
 ![Pasted image 20240716084811](../Assets/Pasted%20image%2020240716084811.png)
+
 Two pointers that point to a `pcap_if_t` structure are defined; named `alldevs` and `d` respectively.
 >[!note] `pcap_if_t` structures have an item from interface lists.
 
@@ -128,6 +132,7 @@ The program has 2 functions, `main()` which calls `obfuscated_code()`
 ### obfuscated_code()
 
 ![Pasted image 20240716183133](../Assets/Pasted%20image%2020240716183133.png)
+
 This function implores a technique known as [Control Flow Flattening (CFF)](https://reverseengineering.stackexchange.com/questions/2221/what-is-a-control-flow-flattening-obfuscation-technique), which basically makes control flow a lot harder to read.
 
 CFF has a few terminologies to help deobfuscate:
@@ -158,6 +163,7 @@ The program contains two functions: `hide_process()` and `main()`.
 ### hide_process()
 
 This function takes a string `process_name` as an argument.
+
 ![Pasted image 20240717122941](../Assets/Pasted%20image%2020240717122941.png)
 
 This function defines 2 important variables: a snapshot handle named `hSnapshot` and a `PROCESSENTRY32` structure named `pe32`.
@@ -177,7 +183,9 @@ Then the function attempts to iterate over the snapshot object in order to obtai
 After obtaining the correct function, the program closes the handle to the snapshot and the function exits.
 
 ### main()
+
 ![Pasted image 20240717125011](../Assets/Pasted%20image%2020240717125011.png)
+
 The main function here calls [#hide_process()](#hide_process()) passing `"Notepad.exe"` as a parameter.
 
 ## Steganography-Based Data Exfiltration.c 
@@ -212,6 +220,7 @@ After the operation is complete, the buffer is freed and both files descriptors 
 ### main()
 
 ![Pasted image 20240717205154](../Assets/Pasted%20image%2020240717205154.png)
+
 The main function simply calls [#hide_data()](#hide_data()) with `image.bmp` and `secret.txt` as a parameter.
 
 ### Conclusion
@@ -249,6 +258,7 @@ void main(){
 ```
 
 ### Output
+
 ![Pasted image 20240720033807](Assets/Pasted%20image%2020240720033807.png)
 
 ## Hidden Functionality.c
@@ -288,7 +298,9 @@ void main(){
 ^9489e4
 
 ### Output
+
 ![Pasted image 20240720060445](Assets/Pasted%20image%2020240720060445.png)
+
 ## Encoded String Encapsulation.c
 ### Solution
 ```c
@@ -308,6 +320,7 @@ int main() {
 ```
 
 ### Output
+
 ![Pasted image 20240720061804](Assets/Pasted%20image%2020240720061804.png)
 ## Self Modifying Code.c 
 ### Solution 
@@ -394,7 +407,9 @@ call [rbx] ; Near Absolute Indirect Call
 ```
 
 Relative calls have their operand as the offset from the next instruction to start of our call target, since these operands exist in memory, they are viewed as little endian (Bytes are reversed). I'll be showcasing in example to this.
+
 ![Pasted image 20240721041542](Assets/Pasted%20image%2020240721041542.png)
+
 We add the offset that leads us to the `MiProcessLoaderEntry` which is `FFA46496` (Notice the reversal) to the address of the next instruction which is `1406FB38E`.
 
 >[!note] Important Note:
@@ -453,7 +468,9 @@ When the caller is about to give control to the callee, it is it's responsibilit
 Shadow space can be as much as 32 bytes (Integers are 8 bytes each, 4 integers are passed onto the registers, 4\*8 = 32). ^e0e299
 
 The stack must be **ALWAYS** aligned to a 16-byte boundary, what this means is that the starting address of the stack frame must be divisible by 16, this is to avoid stack misalignment which can cause the program to crash, and so we may allocate more space at the start with addition to [shadow space](#^e0e299) just to ensure this alignment.
+
 ![Pasted image 20240721075009](Assets/Pasted%20image%2020240721075009.png)
+
 ### Stack Frames
 
 When functions begin their execution, they first push the old `rbp` register on the stack, this is to preserve the beginning of the caller's stack frame, the `rbp` register is used for stack frames and to address local variables or arguments in a function.

@@ -8,7 +8,7 @@ All of these stages produce an executable code in a format for the targeted OS: 
 # Anatomy of an Assembly Instruction
 Any assembly instruction normally contain a **mnemonic** (as predefined by the flavor of the OS/Architecture manufacturers) and some operands (which are optional, depending on the mnemonic) 
 For example:
-```asm
+```nasm
 MOV RAX, RBX == movq %rbx,%rax
 ```
 These instructions do the same exact functionality, it's only a matter of a flavor difference: Intel vs AT&T.
