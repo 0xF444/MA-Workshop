@@ -63,7 +63,7 @@ A secondary function `KeyloggerThread()` is defined:
 
 The function first obtains an instance of the current executable (exe or dll that loaded the program) under the variable `hInstance`. ^7b2cb2
 
-Then the `hHook` [variable](#^e18af8) is set to a **low level keyboard hook** with [#KeyboardProc()](#KeyboardProc()) as a hook procedure in the `hInstance` [instance](#^7b2cb2).
+Then the `hHook` [variable](#^e18af8) is set to a **low level keyboard hook** with [KeyboardProc()](#KeyboardProc()) as a hook procedure in the `hInstance` [instance](#^7b2cb2).
 
 Then the program defines a `msg` object in which the program attempts to retrieve every message in the thread's message queue, which is then *translated* and *dispatched* to the hook procedure.
 
@@ -76,7 +76,7 @@ After the program iterates over all the messages in the `msg` object, the `hHook
 ### main()
 
 ![Pasted image 20240715195855](../Assets/Pasted%20image%2020240715195855.png)
-The main function simply attempts to create a thread that executes the [#KeyloggerThread()](#KeyloggerThread()) function, which waits for a signaled state forever then closes.
+The main function simply attempts to create a thread that executes the [KeyloggerThread()](#KeyloggerThread()) function, which waits for a signaled state forever then closes.
 
 ### Conclusion
 The program creates a hook procedure named `KeyboardProc()` which is triggered (Appends non-system keys captured to a file) when the `hHook` is set to the executable process and the message queue is sent to `KeyboardProc()`.
@@ -186,7 +186,7 @@ After obtaining the correct function, the program closes the handle to the snaps
 
 ![Pasted image 20240717125011](../Assets/Pasted%20image%2020240717125011.png)
 
-The main function here calls [#hide_process()](#hide_process()) passing `"Notepad.exe"` as a parameter.
+The main function here calls [hide_process()](#hide_process()) passing `"Notepad.exe"` as a parameter.
 
 ## Steganography-Based Data Exfiltration.c 
 
@@ -221,7 +221,7 @@ After the operation is complete, the buffer is freed and both files descriptors 
 
 ![Pasted image 20240717205154](../Assets/Pasted%20image%2020240717205154.png)
 
-The main function simply calls [#hide_data()](#hide_data()) with `image.bmp` and `secret.txt` as a parameter.
+The main function simply calls [hide_data()](#hide_data()) with `image.bmp` and `secret.txt` as a parameter.
 
 ### Conclusion
 This program writes all character bytes in `secret.txt` at the end of the `image.bmp` file.
