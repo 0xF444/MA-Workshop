@@ -1,32 +1,33 @@
 #resources/workshops/MAWorkshop/tasks 
 # Outline
-- [x] [[#Analysis Tasks]]
-	- [x] [[#Function Pointer Obfuscation.c]]
-	- [x] [[#Keylogger.c]]
-	- [x] [[#Network Sniffer.c]]
-	- [x] [[#Obfuscation with Control Flow Flattening.c]]
-	- [x] [[#Rootkit.c]]
-	- [x] [[#Steganography-Based Data Exfiltration.c]]
-- [x] [[#Reverse Tasks]]
-	- [x] [[#Data Hiding In Executable.c]]
-	- [x] [[#Hidden Functionality.c]]
-	- [x] [[#Encoded String Manipulation.c]]
-	- [x] [[#Self Modifying Code.c]]
-- [x] [[#Stack Research]]
-- [x] [[#References]]
+- [x] [Analysis Tasks](#Analysis%20Tasks)
+	- [x] [Function Pointer Obfuscation.c](#Function%20Pointer%20Obfuscation.c)
+	- [x] [Keylogger.c](#Keylogger.c)
+	- [x] [Network Sniffer.c](#Network%20Sniffer.c)
+	- [x] [Obfuscation with Control Flow Flattening.c](#Obfuscation%20with%20Control%20Flow%20Flattening.c)
+	- [x] [Rootkit.c](#Rootkit.c)
+	- [x] [Steganography-Based Data Exfiltration.c](#Steganography-Based%20Data%20Exfiltration.c)
+- [x] [Reverse Tasks](#Reverse%20Tasks)
+	- [x] [Data Hiding In Executable.c](#Data%20Hiding%20In%20Executable.c)
+	- [x] [Hidden Functionality.c](#Hidden%20Functionality.c)
+	- [x] [Encoded String Manipulation.c](#Encoded%20String%20Manipulation.c)
+	- [x] [Self Modifying Code.c](#Self%20Modifying%20Code.c)
+- [x] [Stack Research](#Stack%20Research)
+- [x] [References](#References)
 ---
 # Analysis Tasks
 ## Function Pointer Obfuscation.c
-![[Pasted image 20240715073502.png]]
+![Pasted image 20240715073502](../Assets/Pasted%20image%2020240715073502.png)
+
 We first include our `stdio.h` library which has the `stdout/stdin` functions like `printf`.
 
 Then we define 3 functions which prints three different lines. ^1c2824
 
-![[Pasted image 20240715075349.png]]
+![Pasted image 20240715075349](../Assets/Pasted%20image%2020240715075349.png)
 
 In the `main()` function, a <mark style="background: #FFF3A3A6;"><mark style="background: #BBFABBA6;">function pointer</mark></mark> named `func_ptr` and a character variable named `choice` are declared, then the program prompts you to enter a number which will be assigned to the `choice` variable through the `scanf` function.
 
-The program then assigns the address of [[#^1c2824|one of the three functions]] based on user input.
+The program then assigns the address of [one of the three functions](#^1c2824) based on user input.
 
 If the user inputs something other than `1, 2, 3`, then the program prints a message and returns 1 indicating <mark style="background: #FF5582A6;">failure</mark>.
 
@@ -34,7 +35,9 @@ Otherwise, the function selected is then called and the program returns 0, indic
 ## Keylogger.c
 
 The program first begins by defining a *hook* global variable, then a **callback function** is declared with three arguments: `nCode`, `wParam` and `lParam`.
-![[Pasted image 20240715173855.png]] ^e18af8
+
+![Pasted image 20240715173855](../Assets/Pasted%20image%2020240715173855.png) ^e18af8
+
 >[!note] Callback functions are functions that are used as parameters later on, it has a similar design to function pointers.
 ### KeyboardProc()
 The function checks if the `nCode` parameter is equal to `HC_ACTION` which is a <mark style="background: #ABF7F7A6;">macro</mark> that indicates that the `wParam` and `lParam` arguments contain extra information about a keystroke message. ^e71c93
@@ -42,12 +45,12 @@ The function checks if the `nCode` parameter is equal to `HC_ACTION` which is a 
 If the first condition has been met, the function then checks `wParam` if it contains the <mark style="background: #ABF7F7A6;">macro</mark> `WM_KEYDOWN` which indicate if the keystroke sent is a nonsystem key. ^d0720b
 >[!note] A nonsystem key is a key that is pressed when the ALT key is not pressed.
 
-If the [[#^e71c93|first]] and [[#^d0720b|second]] conditions have been met, the function then declares a pointer `p` of type `KBDLLHOOKSTRUCT` which will be initialized with `lParam` that is typecasted into `KBDLLHOOKSTRUCT` pointer.
+If the [first](#^e71c93) and [second](#^d0720b) conditions have been met, the function then declares a pointer `p` of type `KBDLLHOOKSTRUCT` which will be initialized with `lParam` that is typecasted into `KBDLLHOOKSTRUCT` pointer.
 >[!note] `lParam` here contains the extra information about the keystroke, such as the repeat count, scan code, etc..
 
 Then a file descriptor variable `file` is defined and initialized by `fopen()` which will attempt to retrieve a file descriptor to `keylog.txt`, with **append** permissions, if the file doesn't exist then it will be created. ^7d5ed9
 
-The function then checks if the [[#^7d5ed9|previous operation]] has succeeded, which if so, begins appending the character representation of the `vkCode` member pointed by the pointer `p`, then the file is properly closed.
+The function then checks if the [previous operation](#^7d5ed9) has succeeded, which if so, begins appending the character representation of the `vkCode` member pointed by the pointer `p`, then the file is properly closed.
 
 The return value of this function is the return value of `CallNextHookEx()` which takes the `hHook` variable, and the arguments passed to the `KeyboardProc()` function.
 
@@ -56,11 +59,11 @@ The return value of this function is the return value of `CallNextHookEx()` whic
 ### KeyloggerThread()
 A secondary function `KeyloggerThread()` is defined:
 
-![[Pasted image 20240715192552.png]]
+![Pasted image 20240715192552](../Assets/Pasted%20image%2020240715192552.png)
 
 The function first obtains an instance of the current executable (exe or dll that loaded the program) under the variable `hInstance`. ^7b2cb2
 
-Then the `hHook` [[#^e18af8|variable]] is set to a **low level keyboard hook** with [[#KeyboardProc()]] as a hook procedure in the `hInstance` [[#^7b2cb2|instance]].
+Then the `hHook` [variable](#^e18af8) is set to a **low level keyboard hook** with [KeyboardProc()](#KeyboardProc()) as a hook procedure in the `hInstance` [instance](#^7b2cb2).
 
 Then the program defines a `msg` object in which the program attempts to retrieve every message in the thread's message queue, which is then *translated* and *dispatched* to the hook procedure.
 
@@ -72,8 +75,8 @@ After the program iterates over all the messages in the `msg` object, the `hHook
 
 ### main()
 
-![[Pasted image 20240715195855.png]]
-The main function simply attempts to create a thread that executes the [[#KeyloggerThread()]] function, which waits for a signaled state forever then closes.
+![Pasted image 20240715195855](../Assets/Pasted%20image%2020240715195855.png)
+The main function simply attempts to create a thread that executes the [KeyloggerThread()](#KeyloggerThread()) function, which waits for a signaled state forever then closes.
 
 ### Conclusion
 The program creates a hook procedure named `KeyboardProc()` which is triggered (Appends non-system keys captured to a file) when the `hHook` is set to the executable process and the message queue is sent to `KeyboardProc()`.
@@ -86,7 +89,7 @@ The program uses `stdio.h` and `pcap.h` libraries for input/output operations an
 The program has two functions: `packet_handler()` and `main()`:
 ### packet_handler()
 
-![[Pasted image 20240716074849.png]]
+![Pasted image 20240716074849](../Assets/Pasted%20image%2020240716074849.png)
 This is a simple function that takes the following arguments:
 
 1. A pointer to an unsigned character named `param`
@@ -99,7 +102,8 @@ This function will serve as a **callback** function as this will be executed for
 
 ### main()
 
-![[Pasted image 20240716084811.png]]
+![Pasted image 20240716084811](../Assets/Pasted%20image%2020240716084811.png)
+
 Two pointers that point to a `pcap_if_t` structure are defined; named `alldevs` and `d` respectively.
 >[!note] `pcap_if_t` structures have an item from interface lists.
 
@@ -112,12 +116,12 @@ The program begins to check all interfaces in the `alldevs` pointer using `pcap_
 
 If the function above fails, then the program prints out the error code and exits, returning 1.
 
-![[Pasted image 20240716085401.png]]
+![Pasted image 20240716085401](../Assets/Pasted%20image%2020240716085401.png)
 The program then iterates over each device found by `pcap_findalldevs()` and prints the description if found.
 
 Then, the program attempts to open a handle to a packet capture descriptor (essentially opening a live capture session) using `pcap_open_live()`, if this fails, the programs prints the name of the faulty interface and exits prematurely.
 
-The program then captures the packets from the device pointed by the descriptor `adhandle` and uses [[#packet_handler()]] as a callback function (It is triggered for each packet captured)
+The program then captures the packets from the device pointed by the descriptor `adhandle` and uses [packet_handler()](#packet_handler()) as a callback function (It is triggered for each packet captured)
 
 Lastly, frees all interfaces from the `alldevs` interface list and exits, returning 0.
 
@@ -127,14 +131,15 @@ The program has 2 functions, `main()` which calls `obfuscated_code()`
 
 ### obfuscated_code()
 
-![[Pasted image 20240716183133.png]]
+![Pasted image 20240716183133](../Assets/Pasted%20image%2020240716183133.png)
+
 This function implores a technique known as [Control Flow Flattening (CFF)](https://reverseengineering.stackexchange.com/questions/2221/what-is-a-control-flow-flattening-obfuscation-technique), which basically makes control flow a lot harder to read.
 
 CFF has a few terminologies to help deobfuscate:
 1. Dispatcher Block: This is the block that determines which block of the original code to be executed. ^ab71f2
 2. State Variable: This is the variable that separates each block of the original code.
 
-All what CFF does is that the original code is split up to different blocks, and modifies the state variable `state` for which the [[#^ab71f2||Dispatcher Block]] decides which case to be executed.
+All what CFF does is that the original code is split up to different blocks, and modifies the state variable `state` for which the [Dispatcher Block](#^ab71f2) decides which case to be executed.
 
 In our example here, the program here runs normally even with CFF, because each case changes the `state` variable to the next case statement, which means that we can remove the Dispatcher Block and the state variable and execute normally.
 
@@ -158,7 +163,8 @@ The program contains two functions: `hide_process()` and `main()`.
 ### hide_process()
 
 This function takes a string `process_name` as an argument.
-![[Pasted image 20240717122941.png]]
+
+![Pasted image 20240717122941](../Assets/Pasted%20image%2020240717122941.png)
 
 This function defines 2 important variables: a snapshot handle named `hSnapshot` and a `PROCESSENTRY32` structure named `pe32`.
 
@@ -170,15 +176,17 @@ After obtaining a valid snapshot handle, the program initializes the first membe
 
 The function then fetches the first process from the snapshot into the `pe32` structure and does a fail check.
 
-![[Pasted image 20240717124323.png]]
+![Pasted image 20240717124323](../Assets/Pasted%20image%2020240717124323.png)
 
 Then the function attempts to iterate over the snapshot object in order to obtain the process that has the name `process_name` and then attempts to obtain a handle to that process (With all permissions), which if successful, prints a message displaying the name and the PID then terminates that process and closes the handle to it.
 
 After obtaining the correct function, the program closes the handle to the snapshot and the function exits.
 
 ### main()
-![[Pasted image 20240717125011.png]]
-The main function here calls [[#hide_process()]] passing `"Notepad.exe"` as a parameter.
+
+![Pasted image 20240717125011](../Assets/Pasted%20image%2020240717125011.png)
+
+The main function here calls [hide_process()](#hide_process()) passing `"Notepad.exe"` as a parameter.
 
 ## Steganography-Based Data Exfiltration.c 
 
@@ -186,7 +194,7 @@ This program has 2 functions: `hide_data()` which contain all the work, and the 
 
 ### hide_data()
 
-![[Pasted image 20240717193730.png]]
+![Pasted image 20240717193730](../Assets/Pasted%20image%2020240717193730.png)
 
 The function attempts to open two files `img` and `dat` respectively, while `img` is in binary mode, and they both are opened with the same permission: R/W.
 
@@ -195,7 +203,7 @@ The function then calculates the size of the image by putting the cursor to <mar
 
 The function then puts the position of the cursor back to the beginning of the file.
 
-![[Pasted image 20240717195355.png]]
+![Pasted image 20240717195355](../Assets/Pasted%20image%2020240717195355.png)
 
 Then, the function allocates memory of size `img_size` from the heap using `malloc()` and assigns `buffer` as a pointer to that memory allocated.
 
@@ -211,13 +219,14 @@ After the operation is complete, the buffer is freed and both files descriptors 
 
 ### main()
 
-![[Pasted image 20240717205154.png]]
-The main function simply calls [[#hide_data()]] with `image.bmp` and `secret.txt` as a parameter.
+![Pasted image 20240717205154](../Assets/Pasted%20image%2020240717205154.png)
+
+The main function simply calls [hide_data()](#hide_data()) with `image.bmp` and `secret.txt` as a parameter.
 
 ### Conclusion
 This program writes all character bytes in `secret.txt` at the end of the `image.bmp` file.
 
-![[Pasted image 20240717205745.png]]
+![Pasted image 20240717205745](../Assets/Pasted%20image%2020240717205745.png)
 
 ---
 
@@ -249,7 +258,8 @@ void main(){
 ```
 
 ### Output
-![[Pasted image 20240720033807.png]]
+
+![Pasted image 20240720033807](Assets/Pasted%20image%2020240720033807.png)
 
 ## Hidden Functionality.c
 ### Solution
@@ -288,7 +298,9 @@ void main(){
 ^9489e4
 
 ### Output
-![[Pasted image 20240720060445.png]]
+
+![Pasted image 20240720060445](Assets/Pasted%20image%2020240720060445.png)
+
 ## Encoded String Encapsulation.c
 ### Solution
 ```c
@@ -308,7 +320,8 @@ int main() {
 ```
 
 ### Output
-![[Pasted image 20240720061804.png]]
+
+![Pasted image 20240720061804](Assets/Pasted%20image%2020240720061804.png)
 ## Self Modifying Code.c 
 ### Solution 
 ```c
@@ -335,7 +348,7 @@ int main() {
 }
 ```
 ### Output
-![[Pasted image 20240720161208.png]]
+![Pasted image 20240720161208](Assets/Pasted%20image%2020240720161208.png)
 
 ---
 # Stack Research
@@ -352,10 +365,10 @@ Back in the Intel 8086 days, the stack was accessed by a segment register named 
 
 The stack has a weird layout (unlike normal memory address spaces), where if it grows, **it grows downwards** which decreases the memory address, and if it shrinks, it shrinks up, increasing the memory address. ^e7ec91
 
-![[Pasted image 20240721032855.png]]
+![Pasted image 20240721032855](Assets/Pasted%20image%2020240721032855.png)
 
 There are two instructions related to stack operations: `push` and `pop`.
-The `push` instruction takes one operand which is pushed onto the stack, and consequently [[#^e7ec91|decreases the RSP pointer by the size of the data pushed, usually 8 bytes.]] The `pop` instruction takes one operand which is the location of where you want to store your data and then removes the value that `RSP` is currently pointing at, and increasing the `RSP` pointer as a consequence.
+The `push` instruction takes one operand which is pushed onto the stack, and consequently [decreases the RSP pointer by the size of the data pushed, usually 8 bytes.](#^e7ec91) The `pop` instruction takes one operand which is the location of where you want to store your data and then removes the value that `RSP` is currently pointing at, and increasing the `RSP` pointer as a consequence.
 
 `mov rbx, qword ptr ss:[rsp]` here tells the processor to take the "qword" (which is a quadword, same as 64-bit value) pointed by the Stack Reference `RSP` and copy it to `RBX`.
 
@@ -394,7 +407,9 @@ call [rbx] ; Near Absolute Indirect Call
 ```
 
 Relative calls have their operand as the offset from the next instruction to start of our call target, since these operands exist in memory, they are viewed as little endian (Bytes are reversed). I'll be showcasing in example to this.
-![[Pasted image 20240721041542.png]]
+
+![Pasted image 20240721041542](Assets/Pasted%20image%2020240721041542.png)
+
 We add the offset that leads us to the `MiProcessLoaderEntry` which is `FFA46496` (Notice the reversal) to the address of the next instruction which is `1406FB38E`.
 
 >[!note] Important Note:
@@ -452,8 +467,10 @@ When the caller is about to give control to the callee, it is it's responsibilit
 
 Shadow space can be as much as 32 bytes (Integers are 8 bytes each, 4 integers are passed onto the registers, 4\*8 = 32). ^e0e299
 
-The stack must be **ALWAYS** aligned to a 16-byte boundary, what this means is that the starting address of the stack frame must be divisible by 16, this is to avoid stack misalignment which can cause the program to crash, and so we may allocate more space at the start with addition to [[#^e0e299|shadow space]] just to ensure this alignment.
-![[Pasted image 20240721075009.png]]
+The stack must be **ALWAYS** aligned to a 16-byte boundary, what this means is that the starting address of the stack frame must be divisible by 16, this is to avoid stack misalignment which can cause the program to crash, and so we may allocate more space at the start with addition to [shadow space](#^e0e299) just to ensure this alignment.
+
+![Pasted image 20240721075009](Assets/Pasted%20image%2020240721075009.png)
+
 ### Stack Frames
 
 When functions begin their execution, they first push the old `rbp` register on the stack, this is to preserve the beginning of the caller's stack frame, the `rbp` register is used for stack frames and to address local variables or arguments in a function.
@@ -466,7 +483,7 @@ Then it moves whatever is on `rsp` to `rbp`, this effectively declares the new s
 >mov rbp,rsp 
 >```
 
-![[Pasted image 20240721080653.png]]
+![Pasted image 20240721080653](Assets/Pasted%20image%2020240721080653.png)
 >[!important] Very Important Note:
 >**Positive offsets** from RBP access **arguments passed** on the stack. **Negative offsets** from RBP access **local variables**.
 
