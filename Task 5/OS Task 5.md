@@ -4,13 +4,13 @@ tags:
 ---
 # Outline
 - [Analyzing Malware Part 1](#Analyzing%20Malware%20Part%201)
-- [Developing Malware: Part 2](#Developing%20Malware:%20Part%202)
+- [Developing Malware: Part 2](#Developing%20Malware%20Part%202)
 # Analyzing Malware: Part 1
 We are given a source code file in C which does malicious things, we'll be analyzing it both statically and dynamically.
 ## Static Analysis
 ### Create_Process()
 
-![Pasted image 20240910184148](Pasted%20image%2020240910184148.png)
+![Pasted image 20240910184148](Assets/Pasted%20image%2020240910184148.png)
 
 What the function does is that it declares and initializes process related structures needed for process creation using `ZeroMemory()`
 
@@ -27,12 +27,12 @@ Otherwise, the function returns this newly created process related information t
 This function takes a constant string (Process Name) as a parameter.
 
 The function then attempts to find the process by name by taking a snapshot of all processes and then iterates over each single process until the process is found, we've talked about this function in greater detail below:
-![hide_process()](../Task%203/C%20Task%203.md#hide_process())
+![](../Task%203/C%20Task%203.md#hide_process())
 
 ### inject_code()
 This function takes a process name (string) as an argument and attempts to open a handle to the given `process_id` with full access.
 
-![Pasted image 20240911151128](Pasted%20image%2020240911151128.png)
+![Pasted image 20240911151128](Assets/Pasted%20image%2020240911151128.png)
 
 The function then uses `VirtualAllocEx()` to allocate memory in the target process' address space with size of 4096 bytes with **Execute** permissions.
 
@@ -47,7 +47,7 @@ What this function does, as the name holds, is that it injects shellcode into a 
 ### main()
 The main function simply calls each of the functions explained above and does this process injection on `notepad.exe`
 
-![Pasted image 20240911153104](Pasted%20image%2020240911153104.png)
+![Pasted image 20240911153104](Assets/Pasted%20image%2020240911153104.png)
 
 ## Dynamic Analysis
 
@@ -68,11 +68,11 @@ There is nothing visually interesting, so lets use [process hacker](https://proc
 
 Checking the memory space of the process, we find our base address with the specified protection!
 
-![Pasted image 20240911183742](Pasted%20image%2020240911183742.png)
+![Pasted image 20240911183742](Assets/Pasted%20image%2020240911183742.png)
 
 Checking the content of this page, we find the shellcode binary:
 
-![Pasted image 20240911183845](Pasted%20image%2020240911183845.png)
+![Pasted image 20240911183845](Assets/Pasted%20image%2020240911183845.png)
 
 Notice that the start address of this page is `0x2f60000`, notice that the `jmp -2` instruction begins at `0x2f60004`.
 
@@ -80,15 +80,15 @@ Notice that the start address of this page is `0x2f60000`, notice that the `jmp 
 
 After a brief moment of idleness, we find that one thread object of interest within the process, executing `ntdll!RtlUserThread` and has a <mark style="background: #FF5582A6;">high CPU usage and cycle deltas.</mark>
 
-![Pasted image 20240911184150](Pasted%20image%2020240911184150.png)
+![Pasted image 20240911184150](Assets/Pasted%20image%2020240911184150.png)
 
 Checking the call stack, we find a very interesting function that is called located at the address `0x2f60004`, this indicates that this thread object is indeed looping over the same address infinitely and consuming as much cycles as the thread can provide (In my case, my processor has a max clock cycle of 4.3 GHz).
 
-![Pasted image 20240911185359](Pasted%20image%2020240911185359.png)
+![Pasted image 20240911185359](Assets/Pasted%20image%2020240911185359.png)
 
 As for syscalls used by this program, there is plenty of noise in a normal Windows 10 installation (especially when we load exes), but we do see some familiar syscalls, such as `Process Create` for the injector process and `Thread Create` for the injected process (notepad.exe)
 
-![Pasted image 20240912063749](Pasted%20image%2020240912063749.png)
+![Pasted image 20240912063749](Assets/Pasted%20image%2020240912063749.png)
 
 # Developing Malware: Part 2
 I've developed a malware that's based on the [](C%20Task%203.md.md#Keylogger.c|keylogger%20from%20Task%203) and added a few functionalities that makes it persistent and also spooky for the user.
@@ -206,20 +206,20 @@ We'll be using procmon as a startup option so that we attempt to capture as many
 
 We notice that has a handle to a file opened named `LOL.txt` which displays the "You're hacked!!" notepad window.
 
-![Pasted image 20240914155816](Pasted%20image%2020240914155816.png)
+![Pasted image 20240914155816](Assets/Pasted%20image%2020240914155816.png)
 
 We also notice a thread object executing a thread called `KeyloggerThread`.
 > The reason we see this is because perhaps the developer (me) left symbols within the program, a typical malware might have their symbols and any debugging information stripped.
 
-![Pasted image 20240914160418](Pasted%20image%2020240914160418.png)
+![Pasted image 20240914160418](Assets/Pasted%20image%2020240914160418.png)
 
 We also see a few file manipulation related syscalls which interacts with a file in the temp directory in C:\\
-![Pasted image 20240914161009](Pasted%20image%2020240914161009.png)
+![Pasted image 20240914161009](Assets/Pasted%20image%2020240914161009.png)
 
 We also notice a few registry related syscalls that attempts to check a key within the autorun key hive (HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run).
-![Pasted image 20240914161756](Pasted%20image%2020240914161756.png)
+![Pasted image 20240914161756](Assets/Pasted%20image%2020240914161756.png)
 
 Lastly, we notice a registry addition named `DisableTaskMgr` which disables Task manager from the currently logged in user.
-![Pasted image 20240914161843](Pasted%20image%2020240914161843.png)
+![Pasted image 20240914161843](Assets/Pasted%20image%2020240914161843.png)
 
-![Pasted image 20240914162039](Pasted%20image%2020240914162039.png)
+![Pasted image 20240914162039](Assets/Pasted%20image%2020240914162039.png)
