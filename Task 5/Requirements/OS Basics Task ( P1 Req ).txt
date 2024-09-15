@@ -1,0 +1,15 @@
+Static Analysis:
+
+   - Identify the key Windows APIs And System Calls Used In This Code.
+
+Dynamic Analysis:
+
+    - Run the code in a controlled environment (e.g., a VM or sandbox).
+    - Use Process Monitor or Process Explorer to observe the process and thread creation.
+    - Use API Monitor to capture the API calls and verify which Windows APIs are invoked.
+
+Deliverables:
+
+    - A written analysis of the code, explaining the key APIs used for process/thread manipulation.
+    - A process tree showing how Notepad is created and code is injected into it.
+    - Screenshots/logs from tools like Procmon or API Monitor showing the behavior of the malware.

@@ -1,0 +1,13 @@
+1- Create Malware "C Code" Useing This Windows APIs : 
+----------------------------------------------------
+- RegOpenKeyEx / NtOpenKey
+- RegSetValueEx / NtSetValueKey
+- RegCreateKeyEx
+- RegDeleteValue (Optional)
+- ShellExecuteEx
+- NtQueryValueKey (Optional syscall)
+
+
+
+2- Create Analysis Report For Your Code
+----------------------------------------
